@@ -77,7 +77,7 @@ class Cannon(GameObject):
     '''
     Cannon class. Manages it's renderring, movement and striking.
     '''
-    def __init__(self, coord=[30, SCREEN_SIZE[1]//2], angle=0, max_pow=50, min_pow=10, color=RED):
+    def __init__(self, coord=[30, SCREEN_SIZE[1]-30], angle=0, max_pow=80, min_pow=10, color=RED):
         '''
         Constructor method. Sets coordinate, direction, minimum and maximum power and color of the gun.
         '''
@@ -121,10 +121,15 @@ class Cannon(GameObject):
 
     def move(self, inc):
         '''
-        Changes vertical position of the gun.
+        Changes horizontal position of the gun.
         '''
-        if (self.coord[1] > 30 or inc > 0) and (self.coord[1] < SCREEN_SIZE[1] - 30 or inc < 0):
-            self.coord[1] += inc
+        x = self.coord[0] + inc
+        if x > SCREEN_SIZE[0] - 30:
+            self.coord[0] = SCREEN_SIZE[0] - 30
+        elif x < 30:
+            self.coord[0] = 30
+        else:
+            self.coord[0] = x
 
     def draw(self, screen):
         '''
@@ -265,10 +270,10 @@ class Manager:
             if event.type == pg.QUIT:
                 done = True
             elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_UP:
-                    self.gun.move(-5)
-                elif event.key == pg.K_DOWN:
-                    self.gun.move(5)
+                if event.key == pg.K_LEFT:
+                    self.gun.move(-25)
+                elif event.key == pg.K_RIGHT:
+                    self.gun.move(25)
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.gun.activate()
