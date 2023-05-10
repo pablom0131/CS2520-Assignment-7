@@ -209,21 +209,24 @@ class MovingTargets(Target):
         super().__init__(coord, color, rad)
         self.vx = randint(-2, +2)
         self.vy = randint(-2, +2)
-        self.falling_sphere = None
+        self.falling_bombs = []
 
     def move(self):
         self.coord[0] += self.vx
         self.coord[1] += self.vy
 
-        if self.falling_sphere is None and self.coord[1] >= 200:
-            self.falling_sphere = TargetBombs(list(self.coord))
-        if self.falling_sphere is not None:
-            self.falling_sphere.move()
+        if randint(1, 100) < 5:
+            self.falling_bombs.append(TargetBombs(list(self.coord)))
+
+        for bombs in self.falling_bombs:
+            bombs.move()
+            if not bombs.is_alive:
+                self.falling_bombs.remove(bombs)
 
     def draw(self, screen):
         super().draw(screen)
-        if self.falling_sphere is not None:
-            self.falling_sphere.draw(screen)
+        for bombs in self.falling_bombs:
+            bombs.draw(screen)
 
 class TargetBombs:
     def __init__(self, coord, vel=(0, 2), width=10, height=5, color=(255, 0, 0)):
