@@ -76,9 +76,9 @@ class Shell(GameObject):
         pg.draw.circle(screen, self.color, self.coord, self.rad)
 
 
-class Cannon(GameObject):
+class Tank(GameObject):
     '''
-    Cannon class. Manages it's renderring, movement and striking.
+    Tank class. Manages it's renderring, movement and striking.
     '''
 
     def __init__(self, coord=[30, SCREEN_SIZE[1]-25], angle=0, max_pow=80, min_pow=10, color=DARKGREEN):
@@ -209,10 +209,36 @@ class MovingTargets(Target):
         super().__init__(coord, color, rad)
         self.vx = randint(-2, +2)
         self.vy = randint(-2, +2)
+        self.falling_sphere = None
 
     def move(self):
         self.coord[0] += self.vx
         self.coord[1] += self.vy
+
+        if self.falling_sphere is None and self.coord[1] >= 200:
+            self.falling_sphere = TargetBombs(list(self.coord))
+        if self.falling_sphere is not None:
+            self.falling_sphere.move()
+
+    def draw(self, screen):
+        super().draw(screen)
+        if self.falling_sphere is not None:
+            self.falling_sphere.draw(screen)
+
+class TargetBombs:
+    def __init__(self, coord, vel=(0, 2), width=10, height=5, color=(255, 0, 0)):
+        self.coord = coord
+        self.vel = vel
+        self.width = width
+        self.height = height
+        self.color = color
+        self.is_alive = True
+    def move(self):
+        self.coord[1] += self.vel[1]
+        if self.coord[1] > SCREEN_SIZE[1]:
+            self.is_alive = False
+    def draw(self, screen):
+        pg.draw.rect(screen, self.color, (self.coord[0], self.coord[1], self.width, self.height))
 
 
 class ScoreTable:
@@ -250,7 +276,7 @@ class Manager:
 
     def __init__(self, n_targets=1):
         self.balls = []
-        self.gun = Cannon()
+        self.gun = Tank()
         self.targets = []
         self.score_t = ScoreTable()
         self.n_targets = n_targets
@@ -295,9 +321,9 @@ class Manager:
                 done = True
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_LEFT:
-                    self.gun.move(-25)
+                    self.gun.move(-40)
                 elif event.key == pg.K_RIGHT:
-                    self.gun.move(25)
+                    self.gun.move(40)
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.gun.activate()
