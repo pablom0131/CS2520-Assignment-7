@@ -8,6 +8,7 @@ pg.font.init()
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+DARKGREEN = (1, 50, 32)
 
 SCREEN_SIZE = (800, 600)
 
@@ -15,19 +16,21 @@ SCREEN_SIZE = (800, 600)
 def rand_color():
     return (randint(0, 255), randint(0, 255), randint(0, 255))
 
+
 class GameObject:
 
     def move(self):
         pass
-    
+
     def draw(self, screen):
-        pass  
+        pass
 
 
 class Shell(GameObject):
     '''
     The ball class. Creates a ball, controls it's movement and implement it's rendering.
     '''
+
     def __init__(self, coord, vel, rad=20, color=None):
         '''
         Constructor method. Initializes ball's parameters and initial values.
@@ -77,7 +80,8 @@ class Cannon(GameObject):
     '''
     Cannon class. Manages it's renderring, movement and striking.
     '''
-    def __init__(self, coord=[30, SCREEN_SIZE[1]-30], angle=0, max_pow=80, min_pow=10, color=RED):
+
+    def __init__(self, coord=[30, SCREEN_SIZE[1]-25], angle=0, max_pow=80, min_pow=10, color=DARKGREEN):
         '''
         Constructor method. Sets coordinate, direction, minimum and maximum power and color of the gun.
         '''
@@ -88,7 +92,7 @@ class Cannon(GameObject):
         self.color = color
         self.active = False
         self.pow = min_pow
-    
+
     def activate(self):
         '''
         Activates gun's charge.
@@ -108,16 +112,18 @@ class Cannon(GameObject):
         '''
         vel = self.pow
         angle = self.angle
-        ball = Shell(list(self.coord), [int(vel * np.cos(angle)), int(vel * np.sin(angle))])
+        ball = Shell(list(self.coord), [
+                     int(vel * np.cos(angle)), int(vel * np.sin(angle))])
         self.pow = self.min_pow
         self.active = False
         return ball
-        
+
     def set_angle(self, target_pos):
         '''
         Sets gun's direction to target position.
         '''
-        self.angle = np.arctan2(target_pos[1] - self.coord[1], target_pos[0] - self.coord[0])
+        self.angle = np.arctan2(
+            target_pos[1] - self.coord[1], target_pos[0] - self.coord[0])
 
     def move(self, inc):
         '''
@@ -133,11 +139,22 @@ class Cannon(GameObject):
 
     def draw(self, screen):
         '''
-        Draws the gun on the screen.
+        Draws the Tank on the screen.
         '''
+        # Tank
+        static_rect = pg.Rect(self.coord[0] - 60//2, self.coord[1], 60, 20)
+        pg.draw.rect(screen, DARKGREEN, static_rect)
+
+        pg.draw.circle(screen, DARKGREEN, (self.coord[0] - 20, self.coord[1] + 18), 7)
+        pg.draw.circle(screen, DARKGREEN, (self.coord[0], self.coord[1] + 18), 7)
+        pg.draw.circle(screen, DARKGREEN, (self.coord[0] + 20, self.coord[1] + 18), 7)
+
+        # Cannon
         gun_shape = []
-        vec_1 = np.array([int(5*np.cos(self.angle - np.pi/2)), int(5*np.sin(self.angle - np.pi/2))])
-        vec_2 = np.array([int(self.pow*np.cos(self.angle)), int(self.pow*np.sin(self.angle))])
+        vec_1 = np.array([int(5*np.cos(self.angle - np.pi/2)),
+                         int(5*np.sin(self.angle - np.pi/2))])
+        vec_2 = np.array([int(self.pow*np.cos(self.angle)),
+                         int(self.pow*np.sin(self.angle))])
         gun_pos = np.array(self.coord)
         gun_shape.append((gun_pos + vec_1).tolist())
         gun_shape.append((gun_pos + vec_1 + vec_2).tolist())
@@ -150,12 +167,14 @@ class Target(GameObject):
     '''
     Target class. Creates target, manages it's rendering and collision with a ball event.
     '''
+
     def __init__(self, coord=None, color=None, rad=30):
         '''
         Constructor method. Sets coordinate, color and radius of the target.
         '''
         if coord == None:
-            coord = [randint(rad, SCREEN_SIZE[0] - rad), randint(rad, SCREEN_SIZE[1] - rad)]
+            coord = [randint(rad, SCREEN_SIZE[0] - rad),
+                     randint(rad, SCREEN_SIZE[1] - rad)]
         self.coord = coord
         self.rad = rad
 
@@ -184,12 +203,13 @@ class Target(GameObject):
         """
         pass
 
+
 class MovingTargets(Target):
     def __init__(self, coord=None, color=None, rad=30):
         super().__init__(coord, color, rad)
         self.vx = randint(-2, +2)
         self.vy = randint(-2, +2)
-    
+
     def move(self):
         self.coord[0] += self.vx
         self.coord[1] += self.vy
@@ -199,6 +219,7 @@ class ScoreTable:
     '''
     Score table class.
     '''
+
     def __init__(self, t_destr=0, b_used=0):
         self.t_destr = t_destr
         self.b_used = b_used
@@ -212,9 +233,12 @@ class ScoreTable:
 
     def draw(self, screen):
         score_surf = []
-        score_surf.append(self.font.render("Destroyed: {}".format(self.t_destr), True, WHITE))
-        score_surf.append(self.font.render("Balls used: {}".format(self.b_used), True, WHITE))
-        score_surf.append(self.font.render("Total: {}".format(self.score()), True, RED))
+        score_surf.append(self.font.render(
+            "Destroyed: {}".format(self.t_destr), True, WHITE))
+        score_surf.append(self.font.render(
+            "Balls used: {}".format(self.b_used), True, WHITE))
+        score_surf.append(self.font.render(
+            "Total: {}".format(self.score()), True, RED))
         for i in range(3):
             screen.blit(score_surf[i], [10, 10 + 30*i])
 
@@ -223,6 +247,7 @@ class Manager:
     '''
     Class that manages events' handling, ball's motion and collision, target creation, etc.
     '''
+
     def __init__(self, n_targets=1):
         self.balls = []
         self.gun = Cannon()
@@ -237,10 +262,9 @@ class Manager:
         '''
         for i in range(self.n_targets):
             self.targets.append(MovingTargets(rad=randint(max(1, 30 - 2*max(0, self.score_t.score())),
-                30 - max(0, self.score_t.score()))))
+                                                          30 - max(0, self.score_t.score()))))
             self.targets.append(Target(rad=randint(max(1, 30 - 2*max(0, self.score_t.score())),
-                30 - max(0, self.score_t.score()))))
-
+                                                   30 - max(0, self.score_t.score()))))
 
     def process(self, events, screen):
         '''
@@ -251,7 +275,7 @@ class Manager:
         if pg.mouse.get_focused():
             mouse_pos = pg.mouse.get_pos()
             self.gun.set_angle(mouse_pos)
-        
+
         self.move()
         self.collide()
         self.draw(screen)
