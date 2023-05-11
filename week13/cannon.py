@@ -91,6 +91,23 @@ class Fast_Shell(Shell):
         self.color = color
         self.rad = rad
         self.is_alive = True
+        
+ class Slow_Shell(Shell):
+    '''
+    Variation of Shell that's slower but bigger in size.
+    '''
+
+    def __init__(self, coord, vel, rad=30, color=None):
+        '''
+        Constructor method. Initializes ball's parameters and initial values.
+        '''
+        self.coord = coord
+        self.vel = vel * 0.75
+        if color == None:
+            color = rand_color()
+        self.color = color
+        self.rad = rad
+        self.is_alive = True
 
 class Tank(GameObject):
     '''
