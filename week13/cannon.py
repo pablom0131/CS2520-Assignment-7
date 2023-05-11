@@ -249,9 +249,10 @@ class ScoreTable:
     Score table class.
     '''
 
-    def __init__(self, t_destr=0, b_used=0):
+    def __init__(self, t_destr=0, b_used=0, p_chosen="Ball"):
         self.t_destr = t_destr
         self.b_used = b_used
+        self.p_chosen = p_chosen
         self.font = pg.font.SysFont("dejavusansmono", 25)
 
     def score(self):
@@ -268,7 +269,9 @@ class ScoreTable:
             "Balls used: {}".format(self.b_used), True, WHITE))
         score_surf.append(self.font.render(
             "Total: {}".format(self.score()), True, RED))
-        for i in range(3):
+        score_surf.append(self.font.render(
+            "Projectile Chosen: {}".format(self.p_chosen), True, WHITE))
+        for i in range(4):
             screen.blit(score_surf[i], [10, 10 + 30*i])
 
 
@@ -327,6 +330,12 @@ class Manager:
                     self.gun.move(-40)
                 elif event.key == pg.K_RIGHT:
                     self.gun.move(40)
+                elif event.key == pg.K_e:
+                    if self.score_t.p_chosen == "Ball":
+                        self.score_t.p_chosen = "Triangle"
+                    else:
+                        self.score_t.p_chosen = "Ball"
+
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.gun.activate()
