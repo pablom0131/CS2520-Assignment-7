@@ -92,7 +92,7 @@ class Fast_Shell(Shell):
         self.rad = rad
         self.is_alive = True
         
- class Slow_Shell(Shell):
+class Slow_Shell(Shell):
     '''
     Variation of Shell that's slower but bigger in size.
     '''
