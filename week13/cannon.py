@@ -74,7 +74,23 @@ class Shell(GameObject):
         Draws the ball on appropriate surface.
         '''
         pg.draw.circle(screen, self.color, self.coord, self.rad)
+        
+class Fast_Shell(Shell):
+    '''
+    Variation of Shell that's faster but smaller in size.
+    '''
 
+    def __init__(self, coord, vel, rad=10, color=None):
+        '''
+        Constructor method. Initializes ball's parameters and initial values.
+        '''
+        self.coord = coord
+        self.vel = vel * 1.5
+        if color == None:
+            color = rand_color()
+        self.color = color
+        self.rad = rad
+        self.is_alive = True
 
 class Tank(GameObject):
     '''
