@@ -228,6 +228,7 @@ class MovingTargets(Target):
         for bombs in self.falling_bombs:
             bombs.draw(screen)
 
+
 class TargetBombs:
     def __init__(self, coord, vel=(0, 2), width=10, height=5, color=(255, 0, 0)):
         self.coord = coord
