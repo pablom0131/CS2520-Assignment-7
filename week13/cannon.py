@@ -228,6 +228,18 @@ class MovingTargets(Target):
         for bombs in self.falling_bombs:
             bombs.draw(screen)
 
+class VerticalTargets(Target):
+    def __init__(self, coord, vel, rad=30, color=None):
+        super().__init__(coord, vel, rad, color)
+    
+    def move(self, time = 1, grav = 0):
+        self.coord[1] += time * self.vel[1]
+        self.check_screen_bounds_vertical()
+    
+    def check_screen_bounds_vertical(self):
+        if self.coord[1] < self.rad or self.coord[1] > SCREEN_SIZE[1] - self.rad:
+            self.vel[1] *= -1
+
 
 class TargetBombs:
     def __init__(self, coord, vel=(0, 2), width=10, height=5, color=(255, 0, 0)):
