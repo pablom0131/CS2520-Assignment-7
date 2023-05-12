@@ -9,7 +9,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 DARKGREEN = (1, 50, 32)
-
+BLUEVIOLET = (138,43,226)
 SCREEN_SIZE = (800, 600)
 
 
@@ -262,16 +262,13 @@ class MovingTargets(Target):
             bombs.draw(screen)
 
 class VerticalTargets(Target):
-    def __init__(self, coord, vel, rad=30, color=None):
-        super().__init__(coord, vel, rad, color)
-    
-    def move(self, time = 1, grav = 0):
-        self.coord[1] += time * self.vel[1]
-        self.check_screen_bounds_vertical()
-    
-    def check_screen_bounds_vertical(self):
-        if self.coord[1] < self.rad or self.coord[1] > SCREEN_SIZE[1] - self.rad:
-            self.vel[1] *= -1
+    def __init__(self, coord=None, color= BLUEVIOLET, rad=30):
+        super().__init__(coord, color, rad)
+        self.vy = randint(-2, +2)
+
+    def move(self):
+        self.coord[1] += self.vy
+
 
 
 class TargetBombs:
@@ -343,6 +340,8 @@ class Manager:
                                                           30 - max(0, self.score_t.score()))))
             self.targets.append(Target(rad=randint(max(1, 30 - 2*max(0, self.score_t.score())),
                                                    30 - max(0, self.score_t.score()))))
+            self.targets.append(VerticalTargets(rad=randint(max(1, 30 - 2*max(0, self.score_t.score())),
+                                                          30 - max(0, self.score_t.score()))))
 
     def process(self, events, screen):
         '''
