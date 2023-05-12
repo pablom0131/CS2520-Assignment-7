@@ -2,6 +2,8 @@ import numpy as np
 import pygame as pg
 from random import randint, gauss
 
+#from week13.cannon import DARKGREEN, SCREEN_SIZE
+
 pg.init()
 pg.font.init()
 
@@ -10,6 +12,8 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 DARKGREEN = (1, 50, 32)
 BLUEVIOLET = (138, 43, 226)
+YELLOW = (255,255,0)
+GREEN = (0,255,0)
 SCREEN_SIZE = (800, 600)
 
 
@@ -201,6 +205,34 @@ class Tank(GameObject):
         gun_shape.append((gun_pos - vec_1).tolist())
         pg.draw.polygon(screen, self.color, gun_shape)
 
+class BotTank(Tank):
+    def __init__(self, coord=[30, SCREEN_SIZE[1] - 25], angle=0, max_pow=80, min_pow=10, color=WHITE):
+        super().__init__(coord, angle, max_pow, min_pow, color)
+        self.direction = 1
+        self.move_counter = 0
+        self.move_threshold = 50
+
+    def move_left(self):
+        self.move(-1)
+    def move_right(self):
+        self.move(1)
+
+    def update(self):
+        self.move_counter += 1
+        if self.move_counter >= self.move_threshold:
+            self.move_counter = 0
+            self.direction *= -1
+            if self.direction == -1:
+                self.move_left()
+            else:
+                self.move_right()
+        random = 0
+        if random.randint(0,100) < 5:
+            target_angle = random.uniform(-np.pi/4, np.pi/4)
+            self.set_angle([self.coord[0] + 100 * np.cos(target_angle), self.coord[1] + 100 * np.sin(target_angle)])
+            self.activate()
+            return self.strike()
+
 
 class Target(GameObject):
     '''
@@ -218,7 +250,7 @@ class Target(GameObject):
         self.rad = rad
 
         if color == None:
-            color = rand_color()
+            color = YELLOW
         self.color = color
 
     def check_collision(self, ball):
@@ -244,7 +276,7 @@ class Target(GameObject):
 
 
 class MovingTargets(Target):
-    def __init__(self, coord=None, color=None, rad=30):
+    def __init__(self, coord=None, color=GREEN, rad=30):
         super().__init__(coord, color, rad)
         self.vx = randint(-2, +2)
         self.vy = randint(-2, +2)
