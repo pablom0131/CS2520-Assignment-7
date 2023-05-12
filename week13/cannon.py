@@ -9,7 +9,7 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 DARKGREEN = (1, 50, 32)
-BLUEVIOLET = (138,43,226)
+BLUEVIOLET = (138, 43, 226)
 SCREEN_SIZE = (800, 600)
 
 
@@ -74,7 +74,8 @@ class Shell(GameObject):
         Draws the ball on appropriate surface.
         '''
         pg.draw.circle(screen, self.color, self.coord, self.rad)
-        
+
+
 class Fast_Shell(Shell):
     '''
     Variation of Shell that's faster but smaller in size.
@@ -91,7 +92,8 @@ class Fast_Shell(Shell):
         self.color = color
         self.rad = rad
         self.is_alive = True
-        
+
+
 class Slow_Shell(Shell):
     '''
     Variation of Shell that's slower but bigger in size.
@@ -108,6 +110,7 @@ class Slow_Shell(Shell):
         self.color = color
         self.rad = rad
         self.is_alive = True
+
 
 class Tank(GameObject):
     '''
@@ -178,9 +181,12 @@ class Tank(GameObject):
         static_rect = pg.Rect(self.coord[0] - 60//2, self.coord[1], 60, 20)
         pg.draw.rect(screen, DARKGREEN, static_rect)
 
-        pg.draw.circle(screen, DARKGREEN, (self.coord[0] - 20, self.coord[1] + 18), 7)
-        pg.draw.circle(screen, DARKGREEN, (self.coord[0], self.coord[1] + 18), 7)
-        pg.draw.circle(screen, DARKGREEN, (self.coord[0] + 20, self.coord[1] + 18), 7)
+        pg.draw.circle(screen, DARKGREEN,
+                       (self.coord[0] - 20, self.coord[1] + 18), 7)
+        pg.draw.circle(screen, DARKGREEN,
+                       (self.coord[0], self.coord[1] + 18), 7)
+        pg.draw.circle(screen, DARKGREEN,
+                       (self.coord[0] + 20, self.coord[1] + 18), 7)
 
         # Cannon
         gun_shape = []
@@ -261,14 +267,23 @@ class MovingTargets(Target):
         for bombs in self.falling_bombs:
             bombs.draw(screen)
 
+
 class VerticalTargets(Target):
-    def __init__(self, coord=None, color= BLUEVIOLET, rad=30):
+    def __init__(self, coord=None, color=WHITE, rad=30):
         super().__init__(coord, color, rad)
         self.vy = randint(-2, +2)
 
     def move(self):
         self.coord[1] += self.vy
 
+
+class HorizontalTargets(Target):
+    def __init__(self, coord=None, color=RED, rad=30):
+        super().__init__(coord, color, rad)
+        self.vx = randint(-2, +2)
+
+    def move(self):
+        self.coord[0] += self.vx
 
 
 class TargetBombs:
@@ -279,12 +294,15 @@ class TargetBombs:
         self.height = height
         self.color = color
         self.is_alive = True
+
     def move(self):
         self.coord[1] += self.vel[1]
         if self.coord[1] > SCREEN_SIZE[1]:
             self.is_alive = False
+
     def draw(self, screen):
-        pg.draw.rect(screen, self.color, (self.coord[0], self.coord[1], self.width, self.height))
+        pg.draw.rect(screen, self.color,
+                     (self.coord[0], self.coord[1], self.width, self.height))
 
 
 class ScoreTable:
@@ -341,7 +359,9 @@ class Manager:
             self.targets.append(Target(rad=randint(max(1, 30 - 2*max(0, self.score_t.score())),
                                                    30 - max(0, self.score_t.score()))))
             self.targets.append(VerticalTargets(rad=randint(max(1, 30 - 2*max(0, self.score_t.score())),
-                                                          30 - max(0, self.score_t.score()))))
+                                                            30 - max(0, self.score_t.score()))))
+            self.targets.append(HorizontalTargets(rad=randint(max(1, 30 - 2*max(0, self.score_t.score())),
+                                                            30 - max(0, self.score_t.score()))))
 
     def process(self, events, screen):
         '''
@@ -439,7 +459,7 @@ pg.display.set_caption("The gun of Khiryanov")
 done = False
 clock = pg.time.Clock()
 
-mgr = Manager(n_targets=3)
+mgr = Manager(n_targets=2)
 
 while not done:
     clock.tick(15)
