@@ -1,6 +1,7 @@
 import numpy as np
 import pygame as pg
 from random import randint, gauss
+import random
 
 #from week13.cannon import DARKGREEN, SCREEN_SIZE
 
@@ -213,9 +214,9 @@ class BotTank(Tank):
         self.move_threshold = 50
 
     def move_left(self):
-        self.move(-1)
+        self.move(-15)
     def move_right(self):
-        self.move(1)
+        self.move(15)
 
     def update(self):
         self.move_counter += 1
@@ -226,7 +227,6 @@ class BotTank(Tank):
                 self.move_left()
             else:
                 self.move_right()
-        random = 0
         if random.randint(0,100) < 5:
             target_angle = random.uniform(-np.pi/4, np.pi/4)
             self.set_angle([self.coord[0] + 100 * np.cos(target_angle), self.coord[1] + 100 * np.sin(target_angle)])
@@ -470,7 +470,9 @@ class Manager:
         for i, target in enumerate(self.targets):
             target.move()
         self.gun.gain()
-        self.bot_tank.update() 
+        self.bot_tank.update()
+
+            
 
 
 
