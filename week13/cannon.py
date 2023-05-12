@@ -183,13 +183,13 @@ class Tank(GameObject):
         '''
         # Tank
         static_rect = pg.Rect(self.coord[0] - 60//2, self.coord[1], 60, 20)
-        pg.draw.rect(screen, DARKGREEN, static_rect)
+        pg.draw.rect(screen, self.color, static_rect)
 
-        pg.draw.circle(screen, DARKGREEN,
+        pg.draw.circle(screen, self.color,
                        (self.coord[0] - 20, self.coord[1] + 18), 7)
-        pg.draw.circle(screen, DARKGREEN,
+        pg.draw.circle(screen, self.color,
                        (self.coord[0], self.coord[1] + 18), 7)
-        pg.draw.circle(screen, DARKGREEN,
+        pg.draw.circle(screen, self.color,
                        (self.coord[0] + 20, self.coord[1] + 18), 7)
 
         # Cannon
@@ -206,8 +206,8 @@ class Tank(GameObject):
         pg.draw.polygon(screen, self.color, gun_shape)
 
 class BotTank(Tank):
-    def __init__(self, coord=[30, SCREEN_SIZE[1] - 25], angle=0, max_pow=80, min_pow=10, color=WHITE):
-        super().__init__(coord, angle, max_pow, min_pow, color)
+    def __init__(self, coord=[400, SCREEN_SIZE[1] - 25], angle=0, max_pow=80, min_pow=10, color=WHITE):
+        super().__init__(coord, angle, max_pow, min_pow, color = RED)
         self.direction = 1
         self.move_counter = 0
         self.move_threshold = 50
@@ -379,6 +379,7 @@ class Manager:
         self.targets = []
         self.score_t = ScoreTable()
         self.n_targets = n_targets
+        self.bot_tank = BotTank()
         self.new_mission()
 
     def new_mission(self):
@@ -452,6 +453,8 @@ class Manager:
             target.draw(screen)
         self.gun.draw(screen)
         self.score_t.draw(screen)
+        self.bot_tank.draw(screen)
+        
 
     def move(self):
         '''
@@ -467,6 +470,9 @@ class Manager:
         for i, target in enumerate(self.targets):
             target.move()
         self.gun.gain()
+        self.bot_tank.update() 
+
+
 
     def collide(self):
         '''
