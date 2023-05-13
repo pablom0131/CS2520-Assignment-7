@@ -42,14 +42,16 @@ class Shell(GameObject):
         '''
         self.coord = coord
         self.p_type = p_type
+        self.vel = vel
         if self.p_type == 0:
-            self.vel = vel
             self.rad = rad
         elif self.p_type == 1:
-            self.vel = vel * 1.5
+            self.vel[0] *= 1.5
+            self.vel[1] *= 1.5
             self.rad = 10
         else:
-            self.vel = vel * 0.75
+            self.vel[0] *= 0.75
+            self.vel[1] *= 0.75
             self.rad = 30
         if color == None:
             color = rand_color()
@@ -129,13 +131,13 @@ class Tank(GameObject):
         angle = self.angle
         if self.p_type == 0:
             ball = Shell(list(self.coord), [
-                        int(vel * np.cos(angle)), int(vel * np.sin(angle))])
+                        int(vel * np.cos(angle)), int(vel * np.sin(angle))], p_type=0)
         elif self.p_type == 1:
-            ball = Fast_Shell(list(self.coord), [
-                        int(vel * np.cos(angle)), int(vel * np.sin(angle))])
+            ball = Shell(list(self.coord), [
+                        int(vel * np.cos(angle)), int(vel * np.sin(angle))], p_type=1)
         else:
-            ball = Slow_Shell(list(self.coord), [
-                        int(vel * np.cos(angle)), int(vel * np.sin(angle))])
+            ball = Shell(list(self.coord), [
+                        int(vel * np.cos(angle)), int(vel * np.sin(angle))], p_type=2)
         self.pow = self.min_pow
         self.active = False
         return ball
