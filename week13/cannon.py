@@ -189,15 +189,17 @@ class Tank(GameObject):
         gun_shape.append((gun_pos - vec_1).tolist())
         pg.draw.polygon(screen, self.color, gun_shape)
 
+
 class BotTank(Tank):
     def __init__(self, coord=[400, SCREEN_SIZE[1] - 25], angle=0, max_pow=80, min_pow=10, color=WHITE):
-        super().__init__(coord, angle, max_pow, min_pow, color = RED)
+        super().__init__(coord, angle, max_pow, min_pow, color=RED)
         self.direction = 1
         self.move_counter = 0
         self.move_threshold = 50
 
     def move_left(self):
         self.move(-15)
+
     def move_right(self):
         self.move(15)
 
