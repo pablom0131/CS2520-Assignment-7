@@ -119,7 +119,7 @@ class Slow_Shell(Shell):
 
 class Tank(GameObject):
     '''
-    Tank class. Manages it's renderring, movement and striking.
+    Tank class. Manages it's rendering, movement and striking.
     '''
 
     def __init__(self, coord=[30, SCREEN_SIZE[1]-25], angle=0, max_pow=80, min_pow=10, color=DARKGREEN):
