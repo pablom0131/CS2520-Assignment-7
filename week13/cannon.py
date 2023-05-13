@@ -154,8 +154,15 @@ class Tank(GameObject):
         '''
         vel = self.pow
         angle = self.angle
-        ball = Shell(list(self.coord), [
-                     int(vel * np.cos(angle)), int(vel * np.sin(angle))])
+        if self.p_type == 0:
+            ball = Shell(list(self.coord), [
+                        int(vel * np.cos(angle)), int(vel * np.sin(angle))])
+        elif self.p_type == 1:
+            ball = Fast_Shell(list(self.coord), [
+                        int(vel * np.cos(angle)), int(vel * np.sin(angle))])
+        else:
+            ball = Slow_Shell(list(self.coord), [
+                        int(vel * np.cos(angle)), int(vel * np.sin(angle))])
         self.pow = self.min_pow
         self.active = False
         return ball
@@ -343,7 +350,7 @@ class ScoreTable:
     Score table class.
     '''
 
-    def __init__(self, t_destr=0, b_used=0, p_chosen="Ball"):
+    def __init__(self, t_destr=0, b_used=0, p_chosen="reg"):
         self.t_destr = t_destr
         self.b_used = b_used
         self.p_chosen = p_chosen
@@ -430,11 +437,14 @@ class Manager:
                 elif event.key == pg.K_RIGHT:
                     self.gun.move(40)
                 elif event.key == pg.K_e:
-                    if self.score_t.p_chosen == "Ball":
-                        self.score_t.p_chosen = "Triangle"
+                    if self.score_t.p_chosen == "reg":
+                        self.score_t.p_chosen = "fast"
                         self.gun.p_type = 1
+                    elif self.score_t.p_chosen == "fast":
+                        self.score_t.p_chosen = "slow"
+                        self.gun.p_type = 2
                     else:
-                        self.score_t.p_chosen = "Ball"
+                        self.score_t.p_chosen = "reg"
                         self.gun.p_type = 0
 
             elif event.type == pg.MOUSEBUTTONDOWN:
