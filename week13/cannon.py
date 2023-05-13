@@ -44,10 +44,13 @@ class Shell(GameObject):
         self.p_type = p_type
         if self.p_type == 0:
             self.vel = vel
+            self.rad = rad
         elif self.p_type == 1:
             self.vel = vel * 1.5
+            self.rad = 10
         else:
             self.vel = vel * 0.75
+            self.rad = 30
         if color == None:
             color = rand_color()
         self.color = color
