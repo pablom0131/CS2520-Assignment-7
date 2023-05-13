@@ -122,7 +122,7 @@ class Tank(GameObject):
     Tank class. Manages it's rendering, movement and striking.
     '''
 
-    def __init__(self, coord=[30, SCREEN_SIZE[1]-25], angle=0, max_pow=80, min_pow=10, color=DARKGREEN):
+    def __init__(self, coord=[30, SCREEN_SIZE[1]-25], angle=0, max_pow=80, min_pow=10, color=DARKGREEN, p_type=0):
         '''
         Constructor method. Sets coordinate, direction, minimum and maximum power and color of the gun.
         '''
@@ -133,6 +133,7 @@ class Tank(GameObject):
         self.color = color
         self.active = False
         self.pow = min_pow
+        self.p_type = p_type
 
     def activate(self):
         '''
