@@ -432,8 +432,10 @@ class Manager:
                 elif event.key == pg.K_e:
                     if self.score_t.p_chosen == "Ball":
                         self.score_t.p_chosen = "Triangle"
+                        self.gun.p_type = 1
                     else:
                         self.score_t.p_chosen = "Ball"
+                        self.gun.p_type = 0
 
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 1:
