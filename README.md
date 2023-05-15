@@ -1,2 +1,2 @@
-# python_programming_class
-Python for programmers class
+# CS2520 Assignment 7
+Ben Luo, Garret Rogers, Pablo Martinez Castro
