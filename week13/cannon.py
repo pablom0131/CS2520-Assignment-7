@@ -45,7 +45,7 @@ class Shell(GameObject):
             self.vel[0] *= 0.75
             self.vel[1] *= 0.75
             self.rad = 30
-        if color == None:
+        if color is None:
             color = rand_color()
         self.color = color
         self.rad = rad
@@ -199,13 +199,13 @@ class Target(GameObject):
     """Target class. Creates target, manages its rendering and collision with a ball event."""
     def __init__(self, coord=None, color=None, rad=30):
         """Constructor method. Sets coordinate, color and radius of the target."""
-        if coord == None:
+        if coord is None:
             coord = [randint(rad, SCREEN_SIZE[0] - rad),
                      randint(rad, SCREEN_SIZE[1] - rad)]
         self.coord = coord
         self.rad = rad
 
-        if color == None:
+        if color is None:
             color = YELLOW
         self.color = color
 
