@@ -29,11 +29,9 @@ class GameObject:
 
 
 class Shell(GameObject):
-    """The ball class. Creates a ball, controls its movement and implement it's rendering."""
+    """The projectile class. Creates a projectile, controls its movement and implements its rendering."""
     def __init__(self, coord, vel, rad=20, color=None, p_type=0):
-        '''
-        Constructor method. Initializes ball's parameters and initial values.
-        '''
+        """Constructor method. Initializes projectile's parameters and initial values."""
         self.coord = coord
         self.p_type = p_type
         self.vel = vel
@@ -54,9 +52,7 @@ class Shell(GameObject):
         self.is_alive = True
 
     def check_corners(self, refl_ort=0.8, refl_par=0.9):
-        '''
-        Reflects ball's velocity when ball bumps into the screen corners. Implemetns inelastic rebounce.
-        '''
+        """Reflects projectile's velocity when ball bumps into the screen corners. Implements inelastic rebounce."""
         for i in range(2):
             if self.coord[i] < self.rad:
                 self.coord[i] = self.rad
@@ -68,10 +64,10 @@ class Shell(GameObject):
                 self.vel[1-i] = int(self.vel[1-i] * refl_par)
 
     def move(self, time=1, grav=0):
-        '''
-        Moves the ball according to it's velocity and time step.
-        Changes the ball's velocity due to gravitational force.
-        '''
+        """Moves the projectile according to its velocity and time step.
+
+        Changes the projectile's velocity due to gravitational force.
+        """
         self.vel[1] += grav
         for i in range(2):
             self.coord[i] += time * self.vel[i]
@@ -80,20 +76,14 @@ class Shell(GameObject):
             self.is_alive = False
 
     def draw(self, screen):
-        '''
-        Draws the ball on appropriate surface.
-        '''
+        """Draws the projectile on appropriate surface."""
         pg.draw.circle(screen, self.color, self.coord, self.rad)
 
 
 class Tank(GameObject):
-    '''
-    Tank class. Manages it's rendering, movement and striking.
-    '''
+    """Tank class. Manages its rendering, movement and striking."""
     def __init__(self, coord=[30, SCREEN_SIZE[1]-25], angle=0, max_pow=80, min_pow=10, color=DARKGREEN, p_type=0):
-        '''
-        Constructor method. Sets coordinate, direction, minimum and maximum power and color of the gun.
-        '''
+        """Constructor method. Sets coordinate, direction, minimum and maximum power, and color of the gun."""
         self.coord = coord
         self.angle = angle
         self.max_pow = max_pow
@@ -104,22 +94,16 @@ class Tank(GameObject):
         self.p_type = p_type
 
     def activate(self):
-        '''
-        Activates gun's charge.
-        '''
+        """Activates gun's charge."""
         self.active = True
 
     def gain(self, inc=2):
-        '''
-        Increases current gun charge power.
-        '''
+        """Increases current gun charge power."""
         if self.active and self.pow < self.max_pow:
             self.pow += inc
 
     def strike(self):
-        '''
-        Creates ball, according to gun's direction and current charge power.
-        '''
+        """Creates projectile, according to gun's direction and current charge power."""
         vel = self.pow
         angle = self.angle
         if self.p_type == 0:
@@ -136,16 +120,12 @@ class Tank(GameObject):
         return ball
 
     def set_angle(self, target_pos):
-        '''
-        Sets gun's direction to target position.
-        '''
+        """Sets gun's direction to target position."""
         self.angle = np.arctan2(
             target_pos[1] - self.coord[1], target_pos[0] - self.coord[0])
 
     def move(self, inc):
-        '''
-        Changes horizontal position of the gun.
-        '''
+        """Changes horizontal position of the gun."""
         x = self.coord[0] + inc
         if x > SCREEN_SIZE[0] - 30:
             self.coord[0] = SCREEN_SIZE[0] - 30
@@ -155,10 +135,8 @@ class Tank(GameObject):
             self.coord[0] = x
 
     def draw(self, screen):
-        '''
-        Draws the Tank on the screen.
-        '''
-        # Tank
+        """Draws the Tank on the screen."""
+        # Tank body
         static_rect = pg.Rect(self.coord[0] - 60//2, self.coord[1], 60, 20)
         pg.draw.rect(screen, self.color, static_rect)
 
@@ -184,19 +162,24 @@ class Tank(GameObject):
 
 
 class BotTank(Tank):
-    def __init__(self, coord=[400, SCREEN_SIZE[1] - 25], angle=0, max_pow=80, min_pow=10, color=WHITE):
+    """Bot tank class. Creates bot tank and handles its movement and striking"""
+    def __init__(self, coord=[400, SCREEN_SIZE[1] - 25], angle=0, max_pow=80, min_pow=10):
+        """Constructor method. Calls superclass constructor and sets values"""
         super().__init__(coord, angle, max_pow, min_pow, color=RED)
         self.direction = 1
         self.move_counter = 0
         self.move_threshold = 50
 
     def move_left(self):
+        """Moves gun left."""
         self.move(-15)
 
     def move_right(self):
+        """Moves gun right"""
         self.move(15)
 
     def update(self):
+        """Updates bot tank movement, gun position, and fire rate."""
         self.move_counter += 1
         if self.move_counter >= self.move_threshold:
             self.move_counter = 0
@@ -213,13 +196,9 @@ class BotTank(Tank):
 
 
 class Target(GameObject):
-    '''
-    Target class. Creates target, manages it's rendering and collision with a ball event.
-    '''
+    """Target class. Creates target, manages its rendering and collision with a ball event."""
     def __init__(self, coord=None, color=None, rad=30):
-        '''
-        Constructor method. Sets coordinate, color and radius of the target.
-        '''
+        """Constructor method. Sets coordinate, color and radius of the target."""
         if coord == None:
             coord = [randint(rad, SCREEN_SIZE[0] - rad),
                      randint(rad, SCREEN_SIZE[1] - rad)]
@@ -231,35 +210,31 @@ class Target(GameObject):
         self.color = color
 
     def check_collision(self, ball):
-        '''
-        Checks whether the ball bumps into target.
-        '''
+        """Checks whether the ball bumps into target."""
         dist = sum([(self.coord[i] - ball.coord[i])**2 for i in range(2)])**0.5
         min_dist = self.rad + ball.rad
         return dist <= min_dist
 
     def draw(self, screen):
-        '''
-        Draws the target on the screen
-        '''
+        """Draws the target on the screen"""
         pg.draw.circle(screen, self.color, self.coord, self.rad)
 
     def move(self):
-        """
-        This type of target can't move at all.
-        :return: None
-        """
+        """This type of target can't move at all."""
         pass
 
 
 class MovingTargets(Target):
+    """Moving target class. Creates moving target, manages its rendering and collision with a ball event."""
     def __init__(self, coord=None, color=GREEN, rad=30):
+        """Constructor method. Sets coordinate, color, and radius of target"""
         super().__init__(coord, color, rad)
         self.vx = randint(-2, +2)
         self.vy = randint(-2, +2)
         self.falling_bombs = []
 
     def move(self):
+        """Changes position of target."""
         self.coord[0] += self.vx
         self.coord[1] += self.vy
 
@@ -272,31 +247,40 @@ class MovingTargets(Target):
                 self.falling_bombs.remove(bombs)
 
     def draw(self, screen):
+        """Draws the target on the screen."""
         super().draw(screen)
         for bombs in self.falling_bombs:
             bombs.draw(screen)
 
 
 class VerticalTargets(Target):
+    """Creates a target that moves vertically. Handles its movement."""
     def __init__(self, coord=None, color=WHITE, rad=30):
+        """Constructor method. Calls superclass constructor and sets values."""
         super().__init__(coord, color, rad)
         self.vy = randint(-2, +2)
 
     def move(self):
+        """Changes position of target."""
         self.coord[1] += self.vy
 
 
 class HorizontalTargets(Target):
+    """Creates a target that moves horizontally. Handles its movement."""
     def __init__(self, coord=None, color=RED, rad=30):
+        """Constructor method. Calls superclass constructor and sets values."""
         super().__init__(coord, color, rad)
         self.vx = randint(-2, +2)
 
     def move(self):
+        """Changes position of target."""
         self.coord[0] += self.vx
 
 
 class TargetBombs:
+    """Creates bombs from targets. Handles its movement and rendering."""
     def __init__(self, coord, vel=(0, 2), width=10, height=5, color=(255, 0, 0)):
+        """Constructor method. Sets values."""
         self.coord = coord
         self.vel = vel
         self.width = width
@@ -305,32 +289,32 @@ class TargetBombs:
         self.is_alive = True
 
     def move(self):
+        """Changes bomb position."""
         self.coord[1] += self.vel[1]
         if self.coord[1] > SCREEN_SIZE[1]:
             self.is_alive = False
 
     def draw(self, screen):
+        """Draws the bombs on the screen"""
         pg.draw.rect(screen, self.color,
                      (self.coord[0], self.coord[1], self.width, self.height))
 
 
 class ScoreTable:
-    '''
-    Score table class.
-    '''
+    """Score table class. Keeps track of the score and creates a scoreboard."""
     def __init__(self, t_destr=0, b_used=0, p_chosen="reg"):
+        """Constructor method. Sets values."""
         self.t_destr = t_destr
         self.b_used = b_used
         self.p_chosen = p_chosen
         self.font = pg.font.SysFont("dejavusansmono", 25)
 
     def score(self):
-        '''
-        Score calculation method.
-        '''
+        """Score calculation method."""
         return self.t_destr - self.b_used
 
     def draw(self, screen):
+        """Draws the scoreboard on the screen."""
         score_surf = []
         score_surf.append(self.font.render(
             "Destroyed: {}".format(self.t_destr), True, WHITE))
@@ -345,10 +329,9 @@ class ScoreTable:
 
 
 class Manager:
-    '''
-    Class that manages events' handling, ball's motion and collision, target creation, etc.
-    '''
+    """Class that manages event handling, projectile motion and collision, target creation, etc."""
     def __init__(self, n_targets=1):
+        """Constructor method. Sets values."""
         self.balls = []
         self.gun = Tank()
         self.targets = []
@@ -358,9 +341,7 @@ class Manager:
         self.new_mission()
 
     def new_mission(self):
-        '''
-        Adds new targets.
-        '''
+        """Adds new targets."""
         for i in range(self.n_targets):
             self.targets.append(MovingTargets(rad=randint(max(1, 30 - 2*max(0, self.score_t.score())),
                                                           30 - max(0, self.score_t.score()))))
@@ -372,9 +353,7 @@ class Manager:
                                                             30 - max(0, self.score_t.score()))))
 
     def process(self, events, screen):
-        '''
-        Runs all necessary method for each iteration. Adds new targets, if previous are destroyed.
-        '''
+        """Runs all necessary method for each iteration. Adds new targets, if previous are destroyed."""
         done = self.handle_events(events)
 
         if pg.mouse.get_focused():
@@ -391,9 +370,7 @@ class Manager:
         return done
 
     def handle_events(self, events):
-        '''
-        Handles events from keyboard, mouse, etc.
-        '''
+        """Handles events from keyboard, mouse, etc."""
         done = False
         for event in events:
             if event.type == pg.QUIT:
@@ -424,9 +401,7 @@ class Manager:
         return done
 
     def draw(self, screen):
-        '''
-        Runs balls', gun's, targets' and score table's drawing method.
-        '''
+        """Runs projectiles', tanks', targets' and score table's drawing methods."""
         for ball in self.balls:
             ball.draw(screen)
         for target in self.targets:
@@ -436,9 +411,7 @@ class Manager:
         self.bot_tank.draw(screen)
 
     def move(self):
-        '''
-        Runs balls' and gun's movement method, removes dead balls.
-        '''
+        """Runs projectiles' and tanks' movement methods, removes dead balls."""
         dead_balls = []
         for i, ball in enumerate(self.balls):
             ball.move(grav=2)
@@ -452,9 +425,7 @@ class Manager:
         self.bot_tank.update()
 
     def collide(self):
-        '''
-        Checks whether balls bump into targets, sets balls' alive trigger.
-        '''
+        """Checks whether projectiles bump into targets, sets projectiles' alive trigger."""
         collisions = []
         targets_c = []
         for i, ball in enumerate(self.balls):
@@ -467,7 +438,7 @@ class Manager:
             self.score_t.t_destr += 1
             self.targets.pop(j)
 
-
+# Driver code
 screen = pg.display.set_mode(SCREEN_SIZE)
 pg.display.set_caption("The gun of Khiryanov")
 
