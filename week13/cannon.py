@@ -163,7 +163,7 @@ class Tank(GameObject):
 
 class BotTank(Tank):
     """Bot tank class. Creates bot tank and handles its movement and striking"""
-    def __init__(self, coord=[400, SCREEN_SIZE[1] - 25], angle=0, max_pow=80, min_pow=10):
+    def __init__(self, coord=[400, SCREEN_SIZE[1] - 25], angle=0, max_pow=80, min_pow=50):
         """Constructor method. Calls superclass constructor and sets values"""
         super().__init__(coord, angle, max_pow, min_pow, color=RED)
         self.direction = 1
@@ -191,8 +191,6 @@ class BotTank(Tank):
         if random.randint(0,100) < 5:
             target_angle = random.uniform(-np.pi/4, np.pi/4)
             self.set_angle([self.coord[0] + 100 * np.cos(target_angle), self.coord[1] + 100 * np.sin(target_angle)])
-            self.activate()
-            return self.strike()
 
 
 class Target(GameObject):
@@ -397,6 +395,7 @@ class Manager:
             elif event.type == pg.MOUSEBUTTONUP:
                 if event.button == 1:
                     self.balls.append(self.gun.strike())
+                    self.balls.append(self.bot_tank.strike())
                     self.score_t.b_used += 1
         return done
 
@@ -422,6 +421,7 @@ class Manager:
         for i, target in enumerate(self.targets):
             target.move()
         self.gun.gain()
+        self.bot_tank.activate()
         self.bot_tank.update()
 
     def collide(self):
