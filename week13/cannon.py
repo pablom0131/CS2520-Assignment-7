@@ -3,8 +3,6 @@ import pygame as pg
 from random import randint, gauss
 import random
 
-#from week13.cannon import DARKGREEN, SCREEN_SIZE
-
 pg.init()
 pg.font.init()
 
@@ -23,7 +21,6 @@ def rand_color():
 
 
 class GameObject:
-
     def move(self):
         pass
 
@@ -32,10 +29,7 @@ class GameObject:
 
 
 class Shell(GameObject):
-    '''
-    The ball class. Creates a ball, controls it's movement and implement it's rendering.
-    '''
-
+    """The ball class. Creates a ball, controls its movement and implement it's rendering."""
     def __init__(self, coord, vel, rad=20, color=None, p_type=0):
         '''
         Constructor method. Initializes ball's parameters and initial values.
@@ -96,7 +90,6 @@ class Tank(GameObject):
     '''
     Tank class. Manages it's rendering, movement and striking.
     '''
-
     def __init__(self, coord=[30, SCREEN_SIZE[1]-25], angle=0, max_pow=80, min_pow=10, color=DARKGREEN, p_type=0):
         '''
         Constructor method. Sets coordinate, direction, minimum and maximum power and color of the gun.
@@ -223,7 +216,6 @@ class Target(GameObject):
     '''
     Target class. Creates target, manages it's rendering and collision with a ball event.
     '''
-
     def __init__(self, coord=None, color=None, rad=30):
         '''
         Constructor method. Sets coordinate, color and radius of the target.
@@ -326,7 +318,6 @@ class ScoreTable:
     '''
     Score table class.
     '''
-
     def __init__(self, t_destr=0, b_used=0, p_chosen="reg"):
         self.t_destr = t_destr
         self.b_used = b_used
@@ -357,7 +348,6 @@ class Manager:
     '''
     Class that manages events' handling, ball's motion and collision, target creation, etc.
     '''
-
     def __init__(self, n_targets=1):
         self.balls = []
         self.gun = Tank()
@@ -444,7 +434,6 @@ class Manager:
         self.gun.draw(screen)
         self.score_t.draw(screen)
         self.bot_tank.draw(screen)
-        
 
     def move(self):
         '''
@@ -461,10 +450,6 @@ class Manager:
             target.move()
         self.gun.gain()
         self.bot_tank.update()
-
-            
-
-
 
     def collide(self):
         '''
@@ -498,6 +483,5 @@ while not done:
     done = mgr.process(pg.event.get(), screen)
 
     pg.display.flip()
-
 
 pg.quit()
