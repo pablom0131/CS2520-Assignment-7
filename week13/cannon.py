@@ -438,6 +438,7 @@ class Manager:
             self.score_t.t_destr += 1
             self.targets.pop(j)
 
+
 # Driver code
 screen = pg.display.set_mode(SCREEN_SIZE)
 pg.display.set_caption("The gun of Khiryanov")
